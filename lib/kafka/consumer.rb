@@ -57,13 +57,18 @@ module Kafka
     end
 
     def fetch_latest_offset
-      send_offsets_request
+      send_offsets_request(LATEST_OFFSET)
       read_offsets_response
     end
 
-    def send_offsets_request
+    def fetch_earliest_offset
+      send_offsets_request(EARLIEST_OFFSET)
+      read_offsets_response
+    end
+
+    def send_offsets_request(offset)
       write(encoded_request_size)
-      write(encode_request(Kafka::RequestType::OFFSETS, topic, partition, LATEST_OFFSET, MAX_OFFSETS))
+      write(encode_request(Kafka::RequestType::OFFSETS, topic, partition, offset, MAX_OFFSETS))
     end
 
     def read_offsets_response
