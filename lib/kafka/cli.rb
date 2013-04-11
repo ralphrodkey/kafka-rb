@@ -109,7 +109,7 @@ module Kafka
     end
 
     def publish?
-      program_name == "kafka-publish"
+      program_name == "leffen-kafka-publish"
     end
 
     def subscribe?
