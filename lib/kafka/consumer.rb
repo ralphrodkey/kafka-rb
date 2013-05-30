@@ -83,8 +83,30 @@ module Kafka
     def read_data_response
       data_length = read(4).unpack("N").shift
       data = read(data_length)
-      # TODO: inspect error code instead of skipping it
+
+      error_code = parse_error_code(data[0,2])
+      case error_code
+      when -1
+        raise Kafka::UnknownException.new
+      when 1
+        raise Kafka::OffsetOutOfRangeException.new
+      when 2
+        raise Kafka::InvalidMessageCodeException.new
+      when 3
+        raise Kafka::WrongPartitionException.new
+      when 4
+        raise Kafka::InvalidFetchSizeException.new
+      end
+
       data[2, data.length]
+    end
+
+    def parse_error_code(bytes)
+      unsigned = bytes.unpack("n").shift
+      length = 16
+      max = 2**length-1
+      mid = 2**(length-1)
+      (unsigned >= mid) ? -((unsigned ^ max) + 1) : unsigned
     end
 
     def encoded_request_size

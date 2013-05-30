@@ -14,6 +14,7 @@
 # limitations under the License.
 module Kafka
   module ErrorCodes
+    UNKNOWN_ERROR           = -1
     NO_ERROR                = 0
     OFFSET_OUT_OF_RANGE     = 1
     INVALID_MESSAGE_CODE    = 2
@@ -21,15 +22,32 @@ module Kafka
     INVALID_RETCH_SIZE_CODE = 4
 
     STRINGS = {
+      -1 => 'Unknown error',
       0 => 'No error',
       1 => 'Offset out of range',
       2 => 'Invalid message code',
       3 => 'Wrong partition code',
-      4 => 'Invalid retch size code',
+      4 => 'Invalid fetch size code',
     }
 
     def self.to_s(code)
       STRINGS[code] || 'Unknown error'
     end
   end
+
+  class UnknownException < IOError
+  end
+
+  class OffsetOutOfRangeException < IOError
+  end
+
+  class InvalidMessageCodeException < IOError
+  end
+
+  class WrongPartitionException < IOError
+  end
+
+  class InvalidFetchSizeException < IOError
+  end
+
 end
