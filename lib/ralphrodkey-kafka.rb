@@ -13,28 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'rubygems'
-require 'rubygems/package_task'
-require 'rubygems/specification'
-require 'date'
-require 'rspec/core/rake_task'
-
-spec = eval(File.open("ralphrodkey-kafka-rb.gemspec", "r").read)
-
-Gem::PackageTask.new(spec) do |pkg|
-  pkg.gem_spec = spec
-end
-
-desc "install the gem locally"
-task :install => [:package] do
-  sh %{sudo gem install pkg/#{GEM}-#{GEM_VERSION}}
-end
-
-desc "Run specs"
-RSpec::Core::RakeTask.new do |t|
-  t.pattern = FileList['spec/**/*_spec.rb']
-  t.rspec_opts = %w(-fs --color)
-end
-
-task :default => :spec
-
+require File.join(File.dirname(__FILE__), "kafka")
